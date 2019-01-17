@@ -37,7 +37,7 @@ where employee_id in(110,120,130) ;
 -- 답 :
 select department_id,salary,employee_id,first_name,last_name 
 from EMPLOYEES 
-order by department_id asc,salary desc,first_name ;
+order by department_id ,salary desc,first_name;
 
 -- *******
 -- 문제014. 
@@ -71,3 +71,39 @@ select count(*) email from EMPLOYEES where not(email like 'A%');
 
 -- 답 : 
 select first_name,last_name from EMPLOYEES where last_name like '_e%' and last_name like '__e%';
+
+-- *******
+-- 문제018
+ -- 최저임금이 10000불 이상인 업무 의 상세 내역을 표시한다
+-- *******
+
+-- 답 :
+select job_id,job_title,min_salary,max_salary
+from jobs
+where 10000 <= min_salary;
+
+-- *******************
+-- [문제19]
+-- 2002년부터 2005년까지 
+-- 가입한 직원의 이름과 가입 일자를 표시한다.
+-- *******************
+
+-- 답 :
+select first_name,hire_date
+from employees
+where '2002/01/01' < hire_date and hire_date < '2005/12/31' 
+order by hire_date asc ;
+
+-- *******************
+-- [문제020]
+-- IT Programmer 또는 Sales Man인 
+-- 직원의 이름, 입사일, 업무코드 표시.
+-- *******************
+
+-- 답 :
+
+select first_name AS "이름" ,hire_date AS "입사일" ,job_id AS "업무코드"
+from employees 
+where job_id like 'IT_PROG' or job_id like 'SA_MAN';
+
+
