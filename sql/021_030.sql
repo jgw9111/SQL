@@ -24,8 +24,8 @@ order by e.fname;
 -- 답 :
 select d.DNAME 부서명, e.FNAME "매니저 이름"
 from dep d
-inner join emp e
-on d.mid like e.eid
+    join emp e
+    on d.mid like e.eid
 ;
 
 -- *******************
@@ -128,3 +128,14 @@ from emp e
         on e.did like d.did
 group by e.did, d.dname
 having round(avg(e.SAL),2) >=  10000;
+
+-- *******************
+-- [문제028]
+-- 올해 연봉에서 10% 인상된 급액이 내년 연봉으로
+-- 책정되었습니다. 내년 전사원의 내년급여를
+-- 출력하세요.
+-- 단, 연봉 = 급여 * 12 입니다
+-- *********************
+
+-- 답 :
+--select eid 사번, fname 이름, 올해급여, 내년급여
