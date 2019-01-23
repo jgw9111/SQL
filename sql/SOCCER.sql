@@ -268,3 +268,90 @@ SELECT S.STADIUM_NAME "스타디움 이름",
         (SELECT T.E_TEAM_NAME FROM TEAM T WHERE T.STADIUM_ID LIKE S.STADIUM_ID) "영문 이름"
 FROM STADIUM S
 ; 
+
+-- SOCCER_SQL_016
+-- 평균키가 인천 유나이티스팀의 평균키 보다 작은 팀의 
+-- 팀ID, 팀명, 평균키 추출
+
+
+-- 1단계 : 
+SELECT P.TEAM_ID , T.TEAM_NAME , ROUND(AVG(P.HEIGHT),2) 평균키
+FROM TEAM T
+    JOIN PLAYER P
+    ON T.TEAM_ID LIKE P.TEAM_ID
+GROUP BY P.TEAM_ID, T.TEAM_NAME
+;
+
+
+-- 2단계 :
+SELECT T.TEAM_ID "팀 ID",T.TEAM_NAME 팀명,ROUND(AVG(P.HEIGHT),2) 평균키
+FROM PLAYER P
+    JOIN TEAM T
+        ON T.TEAM_ID LIKE P.TEAM_ID
+GROUP BY T.TEAM_ID,T.TEAM_NAME
+HAVING ROUND(AVG(P.HEIGHT),2) < 
+                                (SELECT ROUND(AVG(P.HEIGHT),2) 
+                                FROM PLAYER P
+                                    JOIN TEAM T
+                                        ON P.TEAM_ID LIKE T.TEAM_ID
+                                WHERE TEAM_NAME LIKE '유나이티드')
+;
+
+-- SOCCER_SQL_017
+-- 포지션이 MF 인 선수들의  소속팀명 및 선수명, 백넘버 출력
+
+-- 답 :
+
+SELECT P.POSITION,T.TEAM_NAME,P.PLAYER_NAME,P.BACK_NO
+FROM (SELECT P.POSITION,P.PLAYER_NAME,P.BACK_NO,P.TEAM_ID
+    FROM PLAYER P 
+    WHERE P.POSITION LIKE 'MF') P
+    JOIN TEAM T
+    ON P.TEAM_ID LIKE T.TEAM_ID
+ORDER BY P.PLAYER_NAME
+;
+    
+-- SOCCER_SQL_018
+-- 가장 키큰 선수 5 추출, 오라클, 단 키 값이 없으면 제외
+
+-- 답 : 
+SELECT P.PLAYER_NAME, P.BACK_NO, P.POSITION, P."MAX(HEIGHT)"
+FROM (SELECT PLAYER_NAME, BACK_NO, POSITION, MAX(HEIGHT) 
+    FROM PLAYER
+    GROUP BY PLAYER_NAME, BACK_NO, POSITION, HEIGHT
+    HAVING HEIGHT IS NOT NULL 
+    ORDER BY HEIGHT DESC) P 
+WHERE ROWNUM BETWEEN 1 AND 5 
+;
+
+
+-- SOCCER_SQL_019
+-- 선수 자신이 속한 팀의 평균키보다 작은 선수 정보 출력
+
+-- 답 :
+SELECT T.TEAM_NAME, P.PLAYER_NAME, P.POSITION, P.BACK_NO, P.HEIGHT
+FROM PLAYER P
+    JOIN TEAM T
+    ON P.TEAM_ID LIKE T.TEAM_ID
+WHERE P.HEIGHT < (SELECT AVG(P2.HEIGHT) 
+                    FROM PLAYER P2
+                    WHERE P2.TEAM_ID LIKE P.TEAM_ID)
+;    
+
+
+-- SOCCER_SQL_020
+-- 2012년 5월 한달간 경기가 있는 경기장 조회
+-- EXISTS 쿼리는 항상 연관쿼리로 상요한다.
+-- 또한 아무리 조건을 만족하는 건이 여러 건이라도
+-- 조건을 만족하는 1건만 찾으면 추가적인 검색을 진행하지 않는다.
+
+-- 답 :
+
+SELECT DISTINCT S.STADIUM_NAME, SC.SCHE_DATE
+FROM (SELECT SC.SCHE_DATE, SC.STADIUM_ID
+    FROM SCHEDULE SC
+    WHERE SC.SCHE_DATE LIKE '201205%') SC
+    JOIN STADIUM S 
+        ON SC.STADIUM_ID LIKE S.STADIUM_ID
+
+;
