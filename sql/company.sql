@@ -16,6 +16,9 @@ photo VARCHAR2(15),
 notes VARCHAR2(15)
 );
 
+SELECT * FROM Employees;
+ALTER TABLE Employees ADD MANAGER VARCHAR2(15);
+
 CREATE TABLE Shippers(
 shipper_id VARCHAR2(15) PRIMARY KEY,
 shipper_name VARCHAR2(15) NOT NULL,
@@ -79,7 +82,7 @@ CREATE SEQUENCE order_detail_id
 START WITH 1000
 INCREMENT BY 1;
 
-CREATE TABLE Orderdetails(
+CREATE TABLE Order_Details(
 order_detail_id NUMBER PRIMARY KEY,
 order_id NUMBER NOT NULL,
 product_id NUMBER NOT NULL,
@@ -90,4 +93,4 @@ CONSTRAINT Orderdetails_FK_Products FOREIGN KEY(product_id) REFERENCES Products(
 
 SELECT * FROM TAB;
 SELECT * FROM CUSTOMERS;
-DROP TABLE ORDERS;
+DROP TABLE Order_Details;
